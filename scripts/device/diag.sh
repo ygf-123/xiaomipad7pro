@@ -1,0 +1,23 @@
+#!/system/bin/sh
+echo "===== pstore/ramoops in stock config ====="
+zcat /proc/config.gz | grep -E 'PSTORE|RAMOOPS|PANIC_ON_OOPS|PANIC_TIMEOUT' || echo "(none matched)"
+echo ""
+echo "===== /sys/module ====="
+ls /sys/module | grep -iE 'ramoops|pstore' || echo "(no ramoops/pstore module)"
+echo ""
+echo "===== /sys/fs/pstore ====="
+ls -la /sys/fs/pstore/ 2>/dev/null || echo "(no /sys/fs/pstore)"
+echo ""
+echo "===== dmesg ramoops ====="
+dmesg 2>/dev/null | grep -iE 'ramoops|pstore' | head -10 || echo "(nothing)"
+echo ""
+echo "===== /proc/last_kmsg ====="
+ls -l /proc/last_kmsg 2>/dev/null || echo "(no last_kmsg)"
+echo ""
+echo "===== module loading / KMI info ====="
+zcat /proc/config.gz | grep -E '^CONFIG_(MODULE_SIG|MODVERSIONS|MODULE_FORCE_LOAD|MODULE_SIG_FORCE|MODULE_SIG_ALL|MODULE_COMPRESS)' || true
+echo ""
+echo "===== vendor modules location ====="
+ls /vendor/lib/modules 2>/dev/null | head -20 || echo "(no /vendor/lib/modules)"
+echo "--- count ---"
+ls /vendor/lib/modules 2>/dev/null | wc -l
